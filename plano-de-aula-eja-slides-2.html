@@ -1,0 +1,676 @@
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O Papel Social do Professor na EJA</title>
+<style>
+:root {
+--bg: #F4E8D0;
+--surface: #EDE0C8;
+--fg: #2B2B2B;
+--muted: #6B5B47;
+--border: #B68A5A;
+--accent: #8C2F2B;
+--accent2: #D9A441;
+--olive: #6B7A3A;
+--kraft: #B68A5A;
+--font-display: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+--font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+--font-mono: ui-monospace, 'IBM Plex Mono', Menlo, monospace;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+width: 100%; height: 100%;
+overflow: hidden;
+background: var(--fg);
+font-family: var(--font-body);
+}
+
+.deck-viewport {
+width: 100vw; height: 100vh;
+display: flex; align-items: center; justify-content: center;
+position: relative;
+}
+
+.deck-scaler {
+width: 1920px; height: 1080px;
+transform-origin: center center;
+position: relative;
+overflow: hidden;
+background: var(--bg);
+}
+
+.slide {
+position: absolute; inset: 0;
+width: 1920px; height: 1080px;
+padding: 80px 120px;
+display: flex; flex-direction: column;
+opacity: 0; visibility: hidden;
+transition: opacity 0.3s ease;
+}
+
+.slide.active { opacity: 1; visibility: visible; }
+
+.slide-counter {
+position: fixed; bottom: 20px; right: 28px;
+font-family: var(--font-mono); font-size: 14px;
+color: rgba(255,255,255,0.5);
+z-index: 100; pointer-events: none;
+}
+
+.slide-label {
+position: absolute; bottom: 36px; left: 120px;
+font-family: var(--font-mono); font-size: 13px;
+letter-spacing: 0.08em; text-transform: uppercase;
+color: var(--muted);
+}
+
+.slide .kicker {
+font-family: var(--font-mono); font-size: 16px;
+letter-spacing: 0.1em; text-transform: uppercase;
+color: var(--accent); margin-bottom: 16px;
+}
+
+.slide h1 {
+font-family: var(--font-display);
+font-size: clamp(48px, 4.5vw, 86px);
+font-weight: 400; line-height: 1.05;
+color: var(--fg); max-width: 85%;
+}
+
+.slide h2 {
+font-family: var(--font-display);
+font-size: clamp(36px, 3.2vw, 58px);
+font-weight: 400; line-height: 1.12;
+color: var(--fg); margin-bottom: 32px;
+}
+
+.slide h3 {
+font-family: var(--font-display);
+font-size: clamp(28px, 2.4vw, 40px);
+font-weight: 400; line-height: 1.2;
+color: var(--fg); margin-bottom: 20px;
+}
+
+.slide p, .slide li {
+font-family: var(--font-body);
+font-size: clamp(22px, 1.6vw, 28px);
+line-height: 1.6; color: var(--fg);
+}
+
+.slide ul { list-style: none; padding: 0; }
+
+.slide ul li {
+position: relative; padding-left: 28px; margin-bottom: 12px;
+}
+
+.slide ul li::before {
+content: ''; position: absolute;
+left: 0; top: 12px; width: 10px; height: 10px;
+border-radius: 50%; background: var(--accent);
+}
+
+.slide ul.olive li::before { background: var(--olive); }
+.slide ul.gold li::before { background: var(--accent2); }
+
+.slide ol li { margin-bottom: 12px; }
+
+.slide .accent { color: var(--accent); }
+.slide .accent2 { color: var(--accent2); }
+.slide .olive { color: var(--olive); }
+.slide .muted { color: var(--muted); }
+
+.slide blockquote {
+border-left: 4px solid var(--accent);
+padding: 24px 32px; margin: 28px 0;
+background: var(--surface);
+font-family: var(--font-display);
+font-size: clamp(24px, 2vw, 34px);
+font-style: italic; line-height: 1.4;
+color: var(--fg);
+}
+
+.slide blockquote cite {
+display: block; margin-top: 12px;
+font-family: var(--font-mono); font-size: 14px;
+font-style: normal; letter-spacing: 0.06em;
+text-transform: uppercase; color: var(--muted);
+}
+
+.slide blockquote.olive-border { border-left-color: var(--olive); }
+.slide blockquote.gold-border { border-left-color: var(--accent2); }
+
+.slide .tag {
+display: inline-block;
+font-family: var(--font-mono); font-size: 14px;
+letter-spacing: 0.08em; text-transform: uppercase;
+padding: 6px 16px; border: 1.5px solid var(--border);
+color: var(--muted); margin-right: 8px; margin-bottom: 8px;
+}
+
+.slide .tag.filled { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.slide .tag.filled-olive { background: var(--olive); border-color: var(--olive); color: #fff; }
+.slide .tag.filled-gold { background: var(--accent2); border-color: var(--accent2); color: var(--fg); }
+
+.slide .two-col {
+display: grid; grid-template-columns: 1fr 1fr;
+gap: 60px; flex: 1;
+}
+
+.slide .three-col {
+display: grid; grid-template-columns: 1fr 1fr 1fr;
+gap: 48px; flex: 1;
+}
+
+.slide .card {
+background: var(--surface); border: 1.5px solid var(--border);
+padding: 32px; display: flex; flex-direction: column;
+}
+
+.slide .card h3 {
+font-size: clamp(22px, 1.8vw, 30px); margin-bottom: 12px;
+}
+
+.slide .card p {
+font-size: clamp(18px, 1.3vw, 24px);
+line-height: 1.5; color: var(--muted);
+}
+
+.slide .big-number {
+font-family: var(--font-display);
+font-size: clamp(60px, 5vw, 100px);
+font-weight: 400; line-height: 1; color: var(--accent);
+}
+
+.slide .ruler { width: 60px; height: 3px; background: var(--accent); margin: 24px 0; }
+.slide .ruler.gold { background: var(--accent2); }
+.slide .ruler.olive { background: var(--olive); }
+
+.slide .bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; background: var(--accent); }
+.slide .bottom-bar.gold { background: var(--accent2); }
+.slide .bottom-bar.olive { background: var(--olive); }
+.slide .bottom-bar.kraft { background: var(--kraft); }
+
+.slide .highlight-block {
+background: var(--surface); border: 1.5px solid var(--border);
+padding: 28px 36px; margin-top: 24px;
+}
+
+.speaker-notes {
+display: none;
+font-family: var(--font-body); font-size: 18px;
+line-height: 1.6; color: #555; padding: 24px;
+background: #faf6ef; border-top: 2px solid var(--border);
+}
+
+.nav-btn {
+position: fixed; top: 50%; transform: translateY(-50%);
+z-index: 200; background: rgba(0,0,0,0.3);
+border: none; color: #fff; font-size: 28px;
+padding: 16px 12px; cursor: pointer; border-radius: 4px;
+opacity: 0; transition: opacity 0.2s;
+}
+
+.deck-viewport:hover .nav-btn { opacity: 1; }
+.nav-btn:hover { background: rgba(0,0,0,0.6); }
+.nav-btn.prev { left: 12px; }
+.nav-btn.next { right: 12px; }
+
+@media print {
+html, body { background: #fff; overflow: visible; }
+.deck-viewport { display: block; height: auto; }
+.deck-scaler { transform: none !important; width: 100%; height: auto; background: var(--bg) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.slide { position: relative; opacity: 1; visibility: visible; page-break-after: always; width: 100%; height: auto; min-height: 100vh; background: var(--bg) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.nav-btn, .slide-counter { display: none; }
+.speaker-notes { display: block; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+<div class="deck-scaler" id="scaler">
+
+<section class="slide" data-screen-label="01 Título" id="s1">
+<div class="kicker">Fundamentos Teóricos Metodológicos da EJA</div>
+<h1 style="font-size:clamp(52px,5vw,88px); margin-top:auto; margin-bottom:0;">O papel social do professor<br>na EJA: <span class="accent">ética</span> e <span class="accent2">compromisso docente</span></h1>
+<div class="ruler"></div>
+<p style="font-size:clamp(20px,1.5vw,26px); color:var(--muted); max-width:65%;">Reflexão sobre o papel do professor na Educação de Jovens e Adultos, considerando a ética, o compromisso social, o respeito às trajetórias dos estudantes e a garantia do direito à educação.</p>
+<div style="margin-top:auto; display:flex; gap:40px; align-items:baseline;">
+<p style="font-family:var(--font-mono); font-size:15px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);">Professora regente: Sonerline Miguel da Silva</p>
+<p style="font-family:var(--font-mono); font-size:15px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);">Estagiária: Milena Amorim da Silva</p>
+</div>
+<p style="font-family:var(--font-mono); font-size:14px; color:var(--muted); margin-top:8px;">3º ano CN 3002 &middot; Vespertino &middot; Colégio Estadual Luiz Reid</p>
+<span class="slide-label">01 título</span>
+<div class="bottom-bar"></div>
+<div class="speaker-notes">Boa tarde a todos. Hoje vamos refletir sobre o papel social do professor na Educação de Jovens e Adultos, com foco na ética e no compromisso docente. Esta aula propõe que pensemos juntos: quem são os sujeitos da EJA, que escola eles encontraram antes, que escola precisam encontrar agora, e qual é o nosso papel como futuros professores nessa modalidade.</div>
+</section>
+
+<section class="slide" data-screen-label="02 Pergunta disparadora" id="s2">
+<div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:0 140px;">
+<div class="kicker">Acolhida</div>
+<h2 style="font-size:clamp(42px,3.8vw,68px); max-width:100%;">Que tipo de professor<br>a <span class="accent">EJA</span> precisa?</h2>
+<div class="ruler gold" style="margin:28px auto;"></div>
+<p style="font-size:clamp(22px,1.6vw,28px); color:var(--muted); max-width:65%;">A EJA exige um professor que olhe para além do conteúdo escolar. Os estudantes dessa modalidade carregam histórias de vida, experiências de trabalho, responsabilidades familiares, saberes — e também marcas de exclusão escolar.</p>
+<div class="ruler gold" style="margin:20px auto;"></div>
+<p style="font-size:clamp(20px,1.4vw,25px); color:var(--muted); max-width:60%;">Antes de pensar apenas em <em>como ensinar</em>, é preciso refletir:<br><strong style="color:var(--accent);">Quem são esses estudantes?</strong><br><strong style="color:var(--accent);">Que escola eles encontraram antes?</strong><br><strong style="color:var(--accent);">Que escola eles precisam encontrar agora?</strong></p>
+</div>
+<span class="slide-label">02 pergunta disparadora</span>
+<div class="bottom-bar gold"></div>
+<div class="speaker-notes">Vamos começar com uma pergunta no quadro: "Que tipo de professor a EJA precisa?" A EJA exige um professor que olhe para além do conteúdo. Os estudantes carregam histórias de vida, experiências, saberes e marcas de exclusão. Antes de pensar em como ensinar, precisamos refletir: quem são esses estudantes, que escola encontraram antes e que escola precisam encontrar agora. Ouçam algumas respostas — o objetivo é levantar conhecimentos prévios.</div>
+</section>
+
+<section class="slide" data-screen-label="03 Segunda chance ou direito?" id="s3">
+<div class="kicker">Problematização</div>
+<h2 style="font-size:clamp(34px,3vw,52px);">A EJA é uma segunda chance<br>ou é um <span class="accent">direito</span>?</h2>
+<div class="two-col" style="margin-top:28px;">
+<div>
+<p style="margin-bottom:20px;">Muitas vezes, a EJA é vista como uma "segunda chance" para quem não estudou na idade considerada adequada. Essa ideia pode parecer positiva, mas também pode reforçar que o problema está apenas no estudante.</p>
+<p style="color:var(--muted);">Muitos sujeitos da EJA tiveram seus estudos interrompidos por causa do trabalho, da pobreza, da necessidade de cuidar da família, da gravidez, da exclusão, do preconceito ou da falta de acesso à escola.</p>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center;">
+<blockquote>
+"A EJA não deve ser entendida como favor ou ensino menor, mas como direito social e educacional."
+<cite>Concepção superadora</cite>
+</blockquote>
+<div class="highlight-block" style="margin-top:24px;">
+<p style="font-size:clamp(20px,1.4vw,26px); font-weight:600; text-align:center; color:var(--accent);">A EJA é <span class="accent">direito</span>, não favor.</p>
+</div>
+</div>
+</div>
+<span class="slide-label">03 segunda chance ou direito</span>
+<div class="bottom-bar"></div>
+<div class="speaker-notes">Agora uma provocação: a EJA é uma segunda chance ou é um direito? A ideia de "segunda chance" pode parecer positiva, mas reforça que o problema está no estudante. Muitos tiveram os estudos interrompidos por motivos sociais, econômicos e históricos — trabalho, pobreza, família, preconceito. Por isso, a EJA não é favor nem ensino menor. É direito social e educacional. Compreender isso é o primeiro passo para uma atuação docente ética.</div>
+</section>
+
+<section class="slide" data-screen-label="04 Quem são os sujeitos da EJA?" id="s4">
+<div class="kicker">Conhecendo os sujeitos</div>
+<h2 style="font-size:clamp(34px,3vw,52px);">Quem são os sujeitos<br>da <span class="olive">EJA</span>?</h2>
+<div class="two-col" style="margin-top:24px;">
+<div>
+<p style="margin-bottom:20px;">Os estudantes da EJA não chegam à escola vazios. Eles trazem experiências construídas no trabalho, na família, na comunidade, na cultura e nas relações sociais.</p>
+<p style="color:var(--muted); margin-bottom:20px;">Eles não devem ser vistos apenas pela falta, pelo atraso ou pelo que ainda não aprenderam. Devem ser reconhecidos como <strong>sujeitos históricos, sociais e culturais</strong>, que possuem saberes e trajetórias próprias.</p>
+<div class="ruler olive"></div>
+<p style="font-family:var(--font-mono); font-size:15px; letter-spacing:0.08em; text-transform:uppercase; color:var(--olive); margin-bottom:16px; margin-top:20px;">O professor precisa trocar a pergunta</p>
+<p style="text-decoration:line-through; color:var(--muted); font-size:clamp(20px,1.4vw,25px);">"O que esse aluno não sabe?"</p>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center; gap:20px;">
+<p style="font-size:clamp(20px,1.4vw,25px);"><strong style="color:var(--olive);">Por:</strong></p>
+<ul class="olive" style="font-size:clamp(20px,1.4vw,25px);">
+<li>Que saberes esse aluno já traz?</li>
+<li>Que oportunidades foram negadas a ele?</li>
+<li>Como posso relacionar o conteúdo escolar com sua realidade?</li>
+</ul>
+<blockquote class="olive-border" style="font-size:clamp(20px,1.6vw,28px);">
+"O professor da EJA precisa reconhecer os educandos como sujeitos de direitos, que possuem saberes e trajetórias próprias."
+<cite>Miguel Arroyo</cite>
+</blockquote>
+</div>
+</div>
+<span class="slide-label">04 sujeitos da eja</span>
+<div class="bottom-bar olive"></div>
+<div class="speaker-notes">Quem são os sujeitos da EJA? Eles não chegam vazios — trazem experiências do trabalho, da família, da comunidade, da cultura. Não devem ser vistos apenas pela falta ou pelo atraso. São sujeitos históricos, sociais e culturais. O professor precisa trocar a pergunta "O que esse aluno não sabe?" por "Que saberes ele já traz?", "Que oportunidades foram negadas a ele?" e "Como posso relacionar o conteúdo com sua realidade?"</div>
+</section>
+
+<section class="slide" data-screen-label="05 Freire: diálogo e ética" id="s5">
+<div class="kicker">Referencial teórico</div>
+<h2 style="font-size:clamp(34px,3vw,52px);">Paulo Freire:<br><span class="accent2">diálogo, escuta e ética</span></h2>
+<div class="two-col" style="margin-top:28px;">
+<div>
+<p style="margin-bottom:20px;">Paulo Freire contribui para pensar a prática docente como uma ação ética, política e humana.</p>
+<p style="color:var(--muted); margin-bottom:20px;">Para ele, ensinar não é simplesmente transferir conhecimento pronto, mas construir uma relação baseada no diálogo, na escuta e no respeito aos saberes dos educandos.</p>
+<div class="ruler gold"></div>
+<p style="color:var(--muted);">Na EJA, essa ideia é fundamental, porque os estudantes possuem experiências de vida que precisam ser consideradas no processo educativo. O professor não deve agir como alguém que sabe tudo diante de alunos que nada sabem.</p>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center;">
+<blockquote class="gold-border">
+"Educação como prática da liberdade: o professor precisa construir uma prática em que o conhecimento escolar dialogue com a vida dos estudantes."
+<cite>Paulo Freire</cite>
+</blockquote>
+</div>
+</div>
+<span class="slide-label">05 freire — diálogo e ética</span>
+<div class="bottom-bar gold"></div>
+<div class="speaker-notes">Paulo Freire nos ajuda a pensar a prática docente como ação ética, política e humana. Ensinar não é transferir conhecimento pronto — é construir uma relação baseada no diálogo, na escuta e no respeito aos saberes dos educandos. Na EJA, isso é fundamental: os estudantes possuem experiências de vida que precisam ser consideradas. O professor não deve agir como alguém que sabe tudo diante de alunos que nada sabem.</div>
+</section>
+
+<section class="slide" data-screen-label="06 Freire: crítica à educação bancária" id="s6">
+<div class="kicker">Referencial teórico</div>
+<h2 style="font-size:clamp(32px,2.8vw,48px);">Freire e a crítica<br>à <span class="accent">educação bancária</span></h2>
+<div style="margin-top:24px;">
+<p style="margin-bottom:24px;">Freire critica a educação bancária, em que o professor apenas "deposita" conteúdos nos alunos, como se eles fossem recipientes vazios. Na EJA, essa prática pode ser ainda mais excludente, pois desconsidera as experiências dos estudantes e pode repetir uma lógica de silenciamento já vivida por muitos deles.</p>
+<div class="ruler"></div>
+<p style="font-family:var(--font-mono); font-size:14px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); margin-bottom:20px; margin-top:24px;">Uma prática inspirada em Freire busca fazer o contrário</p>
+</div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px 60px; margin-top:auto;">
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p>Valoriza a palavra do aluno</p>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p>Relaciona o conteúdo com a realidade</p>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent2); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p>Estimula a reflexão crítica</p>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent2); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p>Transforma a sala em espaço de diálogo</p>
+</div>
+<div style="grid-column:1/3; display:flex; align-items:flex-start; gap:16px; justify-content:center; margin-top:4px;">
+<span style="color:var(--olive); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p style="font-weight:600;">Ensina com ética e respeito</p>
+</div>
+</div>
+<span class="slide-label">06 educação bancária</span>
+<div class="bottom-bar"></div>
+<div class="speaker-notes">Freire critica a educação bancária, em que o professor apenas deposita conteúdos nos alunos. Na EJA, isso é ainda mais excludente, pois desconsidera as experiências e repete uma lógica de silenciamento. Uma prática inspirada em Freire faz o contrário: valoriza a palavra do aluno, relaciona conteúdo com realidade, estimula reflexão crítica, transforma a sala em espaço de diálogo e ensina com ética e respeito.</div>
+</section>
+
+<section class="slide" data-screen-label="07 Arroyo: campo de direitos" id="s7">
+<div class="kicker">Referencial teórico</div>
+<h2 style="font-size:clamp(34px,3vw,52px);">Miguel Arroyo:<br>EJA como <span class="olive">campo de direitos</span></h2>
+<div class="two-col" style="margin-top:28px;">
+<div>
+<p style="margin-bottom:20px;">Miguel Arroyo ajuda a compreender a EJA como um campo de direitos e de responsabilidade pública.</p>
+<p style="color:var(--muted); margin-bottom:20px;">Para Arroyo, os estudantes da EJA não devem ser vistos apenas como pessoas que estão "fora da idade certa". Essa visão reduz suas histórias e pode esconder as desigualdades que atravessam suas trajetórias.</p>
+<div class="ruler olive"></div>
+<p style="color:var(--muted);">Muitos desses sujeitos tiveram seus percursos escolares interrompidos por motivos <strong style="color:var(--olive);">sociais, econômicos e históricos</strong>.</p>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center;">
+<blockquote class="olive-border">
+"O professor precisa enxergar esses estudantes não como fracassados, mas como sujeitos de direitos, que resistiram e continuam buscando seu lugar na escola."
+<cite>Miguel Arroyo</cite>
+</blockquote>
+</div>
+</div>
+<span class="slide-label">07 arroyo — direitos</span>
+<div class="bottom-bar olive"></div>
+<div class="speaker-notes">Miguel Arroyo nos ajuda a compreender a EJA como campo de direitos e responsabilidade pública. Os estudantes não devem ser vistos como pessoas "fora da idade certa" — isso reduz suas histórias e esconde desigualdades. Muitos tiveram percursos interrompidos por motivos sociais, econômicos e históricos. O professor precisa enxergá-los não como fracassados, mas como sujeitos de direitos que resistiram e continuam buscando seu lugar na escola.</div>
+</section>
+
+<section class="slide" data-screen-label="08 Arroyo: trajetórias" id="s8">
+<div class="kicker">Referencial teórico</div>
+<h2 style="font-size:clamp(32px,2.8vw,48px);">Arroyo e o olhar<br>sobre as <span class="accent2">trajetórias</span></h2>
+<div style="margin-top:20px;">
+<p style="margin-bottom:24px;">A contribuição de Arroyo ajuda a pensar que o professor da EJA precisa reconhecer o estudante em sua totalidade. Ele não ensina para uma "turma atrasada". Ele ensina para sujeitos concretos, com nome, idade, trabalho, família, memórias, dificuldades e desejos.</p>
+<div class="ruler gold"></div>
+<p style="font-family:var(--font-mono); font-size:14px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent2); margin-bottom:20px; margin-top:24px;">Esse reconhecimento muda a prática pedagógica</p>
+</div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px 60px; margin-top:auto;">
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent2); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p>O conteúdo precisa fazer sentido</p>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent2); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p>A linguagem precisa ser respeitosa</p>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--olive); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p>A avaliação precisa considerar o processo</p>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--olive); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p>A aula precisa dialogar com a vida real</p>
+</div>
+<div style="grid-column:1/3; display:flex; align-items:flex-start; gap:16px; justify-content:center; margin-top:4px;">
+<span style="color:var(--accent); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<p style="font-weight:600;">A escola precisa afirmar que aquele estudante tem direito de estar ali</p>
+</div>
+</div>
+<span class="slide-label">08 arroyo — trajetórias</span>
+<div class="bottom-bar gold"></div>
+<div class="speaker-notes">Arroyo nos ajuda a pensar que o professor da EJA precisa reconhecer o estudante em sua totalidade. Não ensina para uma turma atrasada — ensina para sujeitos concretos, com nome, idade, trabalho, família, memórias, dificuldades e desejos. Isso muda a prática: o conteúdo precisa fazer sentido, a linguagem precisa ser respeitosa, a avaliação precisa considerar o processo, a aula precisa dialogar com a vida real e a escola precisa afirmar que aquele estudante tem direito de estar ali.</div>
+</section>
+
+<section class="slide" data-screen-label="09 Knowles: andragogia" id="s9">
+<div class="kicker">Referencial teórico</div>
+<h2 style="font-size:clamp(34px,3vw,52px);">Malcolm Knowles:<br><span class="accent">aprendizagem de adultos</span></h2>
+<div class="two-col" style="margin-top:28px;">
+<div>
+<p style="margin-bottom:20px;">Malcolm Knowles contribui com a ideia de <strong>andragogia</strong>, que estuda a aprendizagem de adultos.</p>
+<p style="color:var(--muted); margin-bottom:20px;">Na perspectiva da andragogia, o adulto aprende melhor quando percebe sentido no que está estudando. Ele precisa compreender a relação daquele conhecimento com sua vida, seus problemas, suas necessidades e seus objetivos.</p>
+<div class="ruler"></div>
+<p style="color:var(--muted);">Na EJA, isso reforça a importância de uma prática pedagógica que considere a <strong style="color:var(--accent);">autonomia</strong>, a <strong style="color:var(--accent);">experiência</strong> e a <strong style="color:var(--accent);">participação</strong> dos estudantes.</p>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center;">
+<blockquote>
+"Ensinar adultos exige respeito à maturidade desses sujeitos, evitando infantilização e aproximando o conteúdo da realidade vivida."
+<cite>Andragogia — Malcolm Knowles</cite>
+</blockquote>
+</div>
+</div>
+<span class="slide-label">09 knowles — andragogia</span>
+<div class="bottom-bar"></div>
+<div class="speaker-notes">Malcolm Knowles contribui com a andragogia — o estudo da aprendizagem de adultos. O adulto aprende melhor quando percebe sentido no que estuda, quando compreende a relação do conhecimento com sua vida, problemas e objetivos. Na EJA, isso reforça a importância de considerar a autonomia, a experiência e a participação. Ensinar adultos exige respeito à maturidade, evitando infantilização e aproximando conteúdo da realidade vivida.</div>
+</section>
+
+<section class="slide" data-screen-label="10 Saviani: conhecimento escolar" id="s10">
+<div class="kicker">Referencial teórico</div>
+<h2 style="font-size:clamp(34px,3vw,52px);">Dermeval Saviani:<br>experiência e <span class="olive">conhecimento escolar</span></h2>
+<div class="two-col" style="margin-top:28px;">
+<div>
+<p style="margin-bottom:20px;">Dermeval Saviani ajuda a lembrar que valorizar as experiências dos alunos <strong>não significa abandonar o conhecimento escolar</strong>.</p>
+<p style="color:var(--muted); margin-bottom:20px;">A escola tem o compromisso de garantir o acesso ao conhecimento sistematizado, ou seja, aos saberes historicamente produzidos pela sociedade.</p>
+<div class="ruler olive"></div>
+<p style="color:var(--muted);">O professor atua como <strong style="color:var(--olive);">mediador</strong> entre a realidade dos alunos e o conhecimento que a escola tem responsabilidade de ensinar.</p>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center; gap:20px;">
+<div class="card" style="border-left:4px solid var(--accent);">
+<h3 style="color:var(--accent); font-size:24px;">Valorizar os saberes de vida</h3>
+<p>Reconhecer as experiências, trajetórias e saberes que os educandos trazem consigo.</p>
+</div>
+<div class="card" style="border-left:4px solid var(--olive);">
+<h3 style="color:var(--olive); font-size:24px;">Garantir o acesso ao conhecimento escolar</h3>
+<p>Assegurar que os estudantes tenham acesso aos saberes sistematizados historicamente.</p>
+</div>
+</div>
+</div>
+<span class="slide-label">10 saviani — conhecimento escolar</span>
+<div class="bottom-bar olive"></div>
+<div class="speaker-notes">Dermeval Saviani nos lembra que valorizar as experiências dos alunos não significa abandonar o conhecimento escolar. A escola tem o compromisso de garantir acesso ao conhecimento sistematizado — os saberes historicamente produzidos pela sociedade. Na EJA, o professor precisa unir duas dimensões: valorizar os saberes de vida e garantir o acesso ao conhecimento escolar. Ele atua como mediador entre a realidade dos alunos e o conhecimento que a escola tem responsabilidade de ensinar.</div>
+</section>
+
+<section class="slide" data-screen-label="11 Papel social do professor" id="s11">
+<div class="kicker">Síntese</div>
+<h2 style="font-size:clamp(34px,3vw,52px); margin-bottom:20px;">O papel social do professor<br><span class="accent2">da EJA</span></h2>
+<div class="two-col" style="margin-top:16px;">
+<div>
+<p style="margin-bottom:20px;">O professor da EJA tem um papel social porque sua prática está ligada à garantia de um direito. Ele trabalha com sujeitos que, muitas vezes, já tiveram esse direito negado.</p>
+<div class="ruler gold"></div>
+<p style="color:var(--muted); margin-bottom:20px;">Por isso, sua atuação não pode ser neutra, indiferente ou apenas técnica. Ser professor da EJA exige compromisso com a aprendizagem, com a permanência dos estudantes, com o respeito às trajetórias e com a construção de uma escola mais humana.</p>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center;">
+<div class="highlight-block" style="border-left:4px solid var(--accent2);">
+<p style="font-family:var(--font-display); font-size:clamp(22px,1.8vw,30px); font-style:italic; line-height:1.4; color:var(--fg);">Esse compromisso não significa facilitar tudo. Significa <strong>ensinar com seriedade</strong>, mas também com <strong style="color:var(--accent2);">escuta, respeito, sensibilidade</strong> e <strong style="color:var(--accent2);">responsabilidade social</strong>.</p>
+</div>
+</div>
+</div>
+<span class="slide-label">11 papel social</span>
+<div class="bottom-bar gold"></div>
+<div class="speaker-notes">O professor da EJA tem um papel social porque sua prática está ligada à garantia de um direito. Ele trabalha com sujeitos que já tiveram esse direito negado. Por isso, a atuação não pode ser neutra, indiferente ou apenas técnica. Exige compromisso com a aprendizagem, com a permanência, com o respeito às trajetórias e com uma escola mais humana. Isso não significa facilitar tudo — significa ensinar com seriedade, mas também com escuta, respeito, sensibilidade e responsabilidade social.</div>
+</section>
+
+<section class="slide" data-screen-label="12 Competências necessárias" id="s12">
+<div class="kicker">Síntese — entrevista com a professora</div>
+<h2 style="font-size:clamp(30px,2.6vw,44px);">Competências necessárias<br>ao professor <span class="accent">da EJA</span></h2>
+<div class="ruler"></div>
+<p style="color:var(--muted); font-size:clamp(18px,1.3vw,22px); margin-bottom:16px;">A partir dos autores estudados e da fala da professora regente:</p>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px 60px; margin-top:auto;">
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<div><p style="font-weight:600; margin-bottom:2px;">Escuta sensível</p><p style="font-size:clamp(16px,1.1vw,20px); color:var(--muted);">Compreender os estudantes sem julgamento</p></div>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent2); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<div><p style="font-weight:600; margin-bottom:2px;">Planejamento flexível</p><p style="font-size:clamp(16px,1.1vw,20px); color:var(--muted);">Adaptar estratégias sem diminuir a qualidade do ensino</p></div>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<div><p style="font-weight:600; margin-bottom:2px;">Respeito às trajetórias</p><p style="font-size:clamp(16px,1.1vw,20px); color:var(--muted);">Não reduzir o aluno à ideia de atraso ou fracasso</p></div>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--accent2); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<div><p style="font-weight:600; margin-bottom:2px;">Domínio teórico</p><p style="font-size:clamp(16px,1.1vw,20px); color:var(--muted);">Fundamentar a prática pedagógica</p></div>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--olive); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<div><p style="font-weight:600; margin-bottom:2px;">Contextualização</p><p style="font-size:clamp(16px,1.1vw,20px); color:var(--muted);">Relacionar o conteúdo com a realidade dos estudantes</p></div>
+</div>
+<div style="display:flex; align-items:flex-start; gap:16px;">
+<span style="color:var(--olive); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<div><p style="font-weight:600; margin-bottom:2px;">Postura ética</p><p style="font-size:clamp(16px,1.1vw,20px); color:var(--muted);">Ensinar com respeito e responsabilidade</p></div>
+</div>
+<div style="grid-column:1/3; display:flex; align-items:flex-start; gap:16px; justify-content:center; margin-top:4px;">
+<span style="color:var(--accent); font-family:var(--font-display); font-size:32px; line-height:1;">—</span>
+<div><p style="font-weight:600; margin-bottom:2px;">Compromisso social</p><p style="font-size:clamp(16px,1.1vw,20px); color:var(--muted);">Reconhecer a educação como direito</p></div>
+</div>
+</div>
+<span class="slide-label">12 competências</span>
+<div class="bottom-bar"></div>
+<div class="speaker-notes">A partir dos autores estudados e da fala da professora Sonerline, destaco as competências essenciais: escuta sensível — compreender sem julgamento; respeito às trajetórias — não reduzir o aluno à ideia de atraso; planejamento flexível — adaptar sem diminuir a qualidade; domínio teórico — fundamentar a prática; contextualização — relacionar conteúdo com realidade; postura ética — ensinar com respeito e responsabilidade; e compromisso social — reconhecer a educação como direito.</div>
+</section>
+
+<section class="slide" data-screen-label="13 Manifesto — atividade" id="s13">
+<div class="kicker">Atividade prática</div>
+<h2 style="font-size:clamp(30px,2.6vw,44px); margin-bottom:8px;">Manifesto do Professor da EJA</h2>
+<p style="color:var(--kraft); font-family:var(--font-mono); font-size:15px; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:28px;">Ética, compromisso e transformação social</p>
+<div class="two-col" style="flex:1;">
+<div style="display:flex; flex-direction:column; gap:16px;">
+<div class="card">
+<h3 style="font-size:22px;">1. Formar duplas</h3>
+<p>Cada dupla recebe uma tira de papel para elaborar uma frase que comporá o cartaz coletivo.</p>
+</div>
+<div class="card">
+<h3 style="font-size:22px;">2. Responder à pergunta</h3>
+<p style="font-weight:600; color:var(--accent);">"Como deve ser um professor da EJA para ser agente de transformação social?"</p>
+</div>
+<div class="card">
+<h3 style="font-size:22px;">3. Montar o cartaz</h3>
+<p>Colar as frases na cartolina e decorar. Ler as frases em voz alta para compartilhar reflexões.</p>
+</div>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center; gap:16px;">
+<p style="font-family:var(--font-mono); font-size:14px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent);">Orientações para a frase</p>
+<ul style="font-size:clamp(18px,1.3vw,22px);">
+<li>A frase deve ter relação com a discussão da aula</li>
+<li>Pode abordar: ética, escuta, diálogo, direito à educação, valorização das trajetórias, compromisso docente</li>
+<li>Evitem frases muito genéricas</li>
+</ul>
+<div class="ruler gold"></div>
+<p style="font-family:var(--font-mono); font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent2); margin-bottom:8px;">Exemplo</p>
+<div class="highlight-block" style="border-left:4px solid var(--accent2);">
+<p style="font-family:var(--font-display); font-size:clamp(16px,1.2vw,21px); font-style:italic; line-height:1.5; color:var(--fg);">"O professor da EJA deve reconhecer seus alunos como sujeitos de direitos, valorizando suas histórias e garantindo uma aprendizagem baseada no diálogo, na ética e no compromisso social."</p>
+</div>
+</div>
+</div>
+<span class="slide-label">13 manifesto</span>
+<div class="bottom-bar kraft"></div>
+<div class="speaker-notes">Agora vamos à atividade prática: em duplas, vocês vão elaborar uma frase que responda à pergunta "Como deve ser um professor da EJA para ser agente de transformação social?" A frase deve ter relação com a discussão da aula, pode abordar ética, escuta, diálogo, direito à educação, valorização das trajetórias, compromisso docente. Evitem frases genéricas. Depois, colaremos no cartaz coletivo e faremos a leitura compartilhada. Vejam o exemplo no slide.</div>
+</section>
+
+<section class="slide" data-screen-label="14 Fechamento e referências" id="s14">
+<div class="kicker">Fechamento</div>
+<h2 style="font-size:clamp(32px,2.8vw,48px);">Para concluir:<br>a EJA é <span class="accent2">direito</span></h2>
+<div class="two-col" style="margin-top:24px;">
+<div>
+<p style="margin-bottom:20px;">A EJA não é uma modalidade menor, nem uma simples compensação escolar. Ela é um direito.</p>
+<p style="color:var(--muted); margin-bottom:20px;">Por isso, o professor da EJA precisa atuar com compromisso ético, social e pedagógico, reconhecendo os estudantes como sujeitos que possuem histórias, saberes, experiências e direito ao conhecimento.</p>
+<div class="ruler gold"></div>
+<p style="font-family:var(--font-mono); font-size:14px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; margin-top:20px;">Avaliação</p>
+<p style="font-size:clamp(18px,1.3vw,24px); color:var(--muted);">Processual, diagnóstica e formativa — observando participação, capacidade de relacionar EJA com ética e compromisso, respeito às ideias dos colegas e coerência da frase com o tema.</p>
+</div>
+<div style="display:flex; flex-direction:column; justify-content:center; gap:20px;">
+<p style="font-family:var(--font-mono); font-size:14px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent2);">Síntese dos autores</p>
+<div class="card" style="border-left:4px solid var(--accent);">
+<p style="font-weight:600; color:var(--accent); margin-bottom:4px;">Paulo Freire</p>
+<p style="font-size:clamp(16px,1.1vw,20px);">Diálogo, escuta, ética e valorização dos saberes dos educandos</p>
+</div>
+<div class="card" style="border-left:4px solid var(--olive);">
+<p style="font-weight:600; color:var(--olive); margin-bottom:4px;">Miguel Arroyo</p>
+<p style="font-size:clamp(16px,1.1vw,20px);">Sujeitos da EJA como sujeitos de direitos</p>
+</div>
+<div class="card" style="border-left:4px solid var(--accent2);">
+<p style="font-weight:600; color:var(--accent2); margin-bottom:4px;">Malcolm Knowles</p>
+<p style="font-size:clamp(16px,1.1vw,20px);">Aprendizagem adulta, experiência e autonomia</p>
+</div>
+<div class="card" style="border-left:4px solid var(--kraft);">
+<p style="font-weight:600; color:var(--kraft); margin-bottom:4px;">Dermeval Saviani</p>
+<p style="font-size:clamp(16px,1.1vw,20px);">Acesso ao conhecimento escolar sistematizado</p>
+</div>
+<div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:8px;">
+<span class="tag filled">Paulo Freire</span>
+<span class="tag filled-olive">Miguel Arroyo</span>
+<span class="tag filled-gold">Knowles</span>
+<span class="tag">Saviani</span>
+<span class="tag">LDB 9.394/1996</span>
+</div>
+</div>
+</div>
+<span class="slide-label">14 fechamento</span>
+<div class="bottom-bar gold"></div>
+<div class="speaker-notes">Para concluir: a EJA não é uma modalidade menor nem uma simples compensação. É um direito. O professor da EJA precisa atuar com compromisso ético, social e pedagógico. Recapitulando os autores: Freire nos trouxe diálogo, escuta e ética; Arroyo, os sujeitos como sujeitos de direitos; Knowles, a aprendizagem adulta com experiência e autonomia; Saviani, o acesso ao conhecimento escolar. A avaliação é processual e formativa. Muito obrigada pela participação de vocês.</div>
+</section>
+
+</div>
+
+<button class="nav-btn prev" onclick="go(-1)">&#8592;</button>
+<button class="nav-btn next" onclick="go(1)">&#8594;</button>
+<div class="slide-counter" id="counter"></div>
+</div>
+
+<script>
+(function(){
+var slides = document.querySelectorAll('.slide');
+var counter = document.getElementById('counter');
+var scaler = document.getElementById('scaler');
+var total = slides.length;
+var current = parseInt(localStorage.getItem('od-deck-pos') || '0', 10);
+if (current < 0 || current >= total) current = 0;
+
+function show(i) {
+for (var j = 0; j < slides.length; j++) {
+if (j === i) slides[j].classList.add('active');
+else slides[j].classList.remove('active');
+}
+counter.textContent = (i + 1) + ' / ' + total;
+localStorage.setItem('od-deck-pos', i);
+current = i;
+}
+
+function go(dir) {
+var next = current + dir;
+if (next < 0) next = total - 1;
+if (next >= total) next = 0;
+show(next);
+}
+
+function scale() {
+var vw = window.innerWidth;
+var vh = window.innerHeight;
+var s = Math.min(vw / 1920, vh / 1080);
+scaler.style.transform = 'scale(' + s + ')';
+}
+
+window.go = go;
+window.addEventListener('keydown', function(e) {
+if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+else if (e.key === 'Home') { e.preventDefault(); show(0); }
+else if (e.key === 'End') { e.preventDefault(); show(total - 1); }
+});
+
+window.addEventListener('resize', scale);
+scale();
+show(current);
+})();
+</script>
+</body>
+</html>

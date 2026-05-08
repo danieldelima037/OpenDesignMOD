@@ -263,9 +263,9 @@ function injectPrintScript(doc: string, title: string): string {
 // `overflow: hidden` for on-screen swiping.
 const DECK_PRINT_CSS = `
 @media print {
-  @page { size: 1920px 1080px; margin: 0; }
+  @page { size: A3 landscape; margin: 0; }
   html, body {
-    width: 1920px !important;
+    width: auto !important;
     height: auto !important;
     overflow: visible !important;
     background: #fff !important;
@@ -277,16 +277,19 @@ const DECK_PRINT_CSS = `
   }
   .slide, [data-screen-label], section.slide, .deck-slide, .ppt-slide {
     flex: none !important;
-    width: 1920px !important;
-    height: 1080px !important;
-    min-height: 1080px !important;
-    max-height: 1080px !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
     page-break-after: always;
     break-after: page;
     scroll-snap-align: none !important;
     transform: none !important;
     position: relative !important;
     overflow: hidden !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: var(--bg) !important;
   }
   .slide:last-child, [data-screen-label]:last-child { page-break-after: auto; break-after: auto; }
   .deck-counter, .deck-hint, .deck-nav,
